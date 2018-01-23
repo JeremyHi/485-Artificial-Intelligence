@@ -1,3 +1,5 @@
+# pylint: disable=missing-docstring
+
 '''
 MazeProblem Formalization:
 MazeProblems represent 2D pathfinding problems, as programmatically
@@ -50,18 +52,15 @@ class MazeProblem:
     # Constructs a new pathfinding problem from a maze, described above
     def __init__(self, maze):
         self.maze = maze
-        self.initial = ([(item.index('*'),idx) for idx,item in enumerate(maze) if '*' in item][0])
-        self.goals = [(item.index('G'),idx) for idx,item in enumerate(maze) if 'G' in item]
-
-        # TODO: Populate initial and goals attributes
+        self.initial = ([(item.index('*'), idx) for idx, item in enumerate(maze) if '*' in item][0])
+        self.goals = [(item.index('G'), idx) for idx, item in enumerate(maze) if 'G' in item]
 
     # goalTest is parameterized by a state, and
     # returns True if the given state is a goal, False otherwise
     def goalTest(self, state):
         if state in self.goals:
-            return true
-        return false
-
+            return True
+        return False
 
     # transitions returns a list of tuples in the format:
     # [(action1, result(action1, s), ...]
@@ -70,17 +69,18 @@ class MazeProblem:
     def transitions(self, state):
         allowed_states = []
 
+        # up
         if (state[1]-1 >= 0) and (self.maze[state[1]-1][state[0]] is not ('x' or 'X')):
-            allowed_states.append((state[0],state[1]-1))
-
+            allowed_states.append((state[0], state[1]-1))
+        # down
         if (state[1]+1 <= 4) and (self.maze[state[1]+1][state[0]] is not ('x' or 'X')):
-            allowed_states.append((state[0],state[1]+1))
-
+            allowed_states.append((state[0], state[1]+1))
+        # left
         if (state[0]-1 >= 0) and (self.maze[state[1]][state[0]-1] is not ('x' or 'X')):
-            allowed_states.append((state[0],state[1]+1))
-
+            allowed_states.append((state[0], state[1]+1))
+        # right
         if (state[0]+1 <= 4) and (self.maze[state[1]][state[0]+1] is not ('x' or 'X')):
-            allowed_states.append((state[0],state[1]+1))
+            allowed_states.append((state[0], state[1]+1))
 
         return allowed_states
 
