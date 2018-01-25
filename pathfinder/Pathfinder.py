@@ -2,7 +2,9 @@
 '''
 Group Memebers:
 - Jeremy Hitchcock
-
+- David Parks
+- Nick Le Gorric
+- Tyler Colson
 
 
 
@@ -55,7 +57,12 @@ class Pathfinder:
 class PathfinderTests(unittest.TestCase):
 
     def test_maze1(self):
-        maze = ["XXXXX", "X..GX", "X...X", "X*..X", "XXXXX"]
+        maze = [
+            "XXXXX",
+            "X..GX",
+            "X...X",
+            "X*..X",
+            "XXXXX"]
         problem = MazeProblem(maze)
         soln = Pathfinder.solve(self, problem)
         soln_test = problem.solnTest(soln)
@@ -63,12 +70,43 @@ class PathfinderTests(unittest.TestCase):
         self.assertEqual(soln_test[0], 4)
 
     def test_maze2(self):
-        maze = ["XXXXX", "XG..X", "XX..X", "X*..X", "XXXXX"]
+        maze = [
+            "XXXXX",
+            "XG..X",
+            "XX..X",
+            "X*..X",
+            "XXXXX"]
         problem = MazeProblem(maze)
         soln = Pathfinder.solve(self, problem)
         soln_test = problem.solnTest(soln)
         self.assertTrue(soln_test[1])
         self.assertEqual(soln_test[0], 4)
+
+    def test_maze3(self):
+        maze = [
+            "XXXXXXX",
+            "XG....X",
+            "XX...XX",
+            "X*..XXX",
+            "XXXXXXX"]
+        problem = MazeProblem(maze)
+        soln = Pathfinder.solve(self, problem)
+        soln_test = problem.solnTest(soln)
+        self.assertTrue(soln_test[1])
+        self.assertEqual(soln_test[0], 4)
+
+    def test_maze4(self):
+        maze = [
+            "XXXXXXXXX",
+            "XXXG..XXX",
+            "XXXXX.XXX",
+            "XX*...XXX",
+            "XXXXXXXXX"]
+        problem = MazeProblem(maze)
+        soln = Pathfinder.solve(self, problem)
+        soln_test = problem.solnTest(soln)
+        self.assertTrue(soln_test[1])
+        self.assertEqual(soln_test[0], 7)
 
 if __name__ == '__main__':
     unittest.main()
