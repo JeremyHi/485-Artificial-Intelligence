@@ -1,3 +1,5 @@
+# pylint: disable=missing-docstring
+
 '''
 SearchTreeNodes contain the following information for BFS:
 
@@ -19,7 +21,6 @@ The parent of this node in the search tree.
 References to all generated children of this node in the search tree
 '''
 class SearchTreeNode:
-
     def __init__(self, state, action, parent):
         self.state = state
         self.action = action

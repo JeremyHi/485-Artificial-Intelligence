@@ -69,18 +69,14 @@ class MazeProblem:
     def transitions(self, state):
         allowed_states = []
 
-        # up
-        if (state[1]-1 >= 0) and (self.maze[state[1]-1][state[0]] is not ('x' or 'X')):
-            allowed_states.append((state[0], state[1]-1))
-        # down
-        if (state[1]+1 <= 4) and (self.maze[state[1]+1][state[0]] is not ('x' or 'X')):
-            allowed_states.append((state[0], state[1]+1))
-        # left
-        if (state[0]-1 >= 0) and (self.maze[state[1]][state[0]-1] is not ('x' or 'X')):
-            allowed_states.append((state[0], state[1]+1))
-        # right
-        if (state[0]+1 <= 4) and (self.maze[state[1]][state[0]+1] is not ('x' or 'X')):
-            allowed_states.append((state[0], state[1]+1))
+        if (state[1]-1 >= 0) and (self.maze[state[1]-1][state[0]] != 'X'):
+            allowed_states.append(("U", (state[0], state[1]-1)))
+        if (state[1]+1 <= 4) and (self.maze[state[1]+1][state[0]] != 'X'):
+            allowed_states.append(("D", (state[0], state[1]+1)))
+        if (state[0]-1 >= 0) and (self.maze[state[1]][state[0]-1] != 'X'):
+            allowed_states.append(("L", (state[0]-1, state[1])))
+        if (state[0]+1 <= 4) and (self.maze[state[1]][state[0]+1] != 'X'):
+            allowed_states.append(("R", (state[0]+1, state[1])))
 
         return allowed_states
 
