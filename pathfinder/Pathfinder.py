@@ -1,6 +1,12 @@
 # pylint: disable=missing-docstring
-
 '''
+Group Memebers:
+- Jeremy Hitchcock
+
+
+
+
+
 The Pathfinder class is responsible for finding a solution (i.e., a
 sequence of actions) that takes the agent from the initial state to the
 optimal goal state.
@@ -22,8 +28,6 @@ class Pathfinder:
     # example returned list might look like:
     # ["U", "R", "R", "U"]
     def solve(self, problem):
-        if problem.initial in problem.goals:
-            return "Goal is initial position"
         already_visited = set()
         nodes = [[SearchTreeNode(state=problem.initial, action=None, parent=None)]]
         already_visited.add(nodes[0][0].state)
