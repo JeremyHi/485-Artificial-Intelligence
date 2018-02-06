@@ -74,6 +74,7 @@ class MazeProblem:
     # Implements the Manhattan Distance Heuristic, which (given a state)
     # provides the cell-distance to the nearest goal state
     def heuristic(self, state):
+
         
 
     # transitions returns a list of tuples in the format:
