@@ -1,3 +1,5 @@
+# pylint: disable=missing-docstring
+
 '''
 SearchTreeNodes contain the following information for BFS:
 
@@ -27,14 +29,35 @@ The heuristic estimate of cost to be incurred from this node to the
 optimal solution
 '''
 class SearchTreeNode:
-    
-    def __init__(self, state, action, parent, totalCost, heuristicCost):
+
+    def __init__(self, state, action, parent, total_cost, heuristic_cost):
         self.state = state
         self.action = action
         self.parent = parent
         self.children = []
-        self.totalCost = totalCost
-        self.heuristicCost = heuristicCost
-    
-    # TODO: Implement rich comparisons
-    
+        self.total_cost = total_cost
+        self.heuristic_cost = heuristic_cost
+
+    def compare_nodes(self, node):
+        return self.__dict__ == node.__dict__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# footer

@@ -1,3 +1,5 @@
+# pylint: disable=missing-docstring
+
 '''
 Homework 1 MazeProblem Formalization:
 MazeProblems represent 2D pathfinding problems, as programmatically
@@ -34,7 +36,7 @@ Representing the position of the agent, as tuples in which:
 === Actions ===
 Representing the allowable Up, Down, Left, and Right movement capabilities
 of the agent in the 2D Maze; we'll simply use string representations:
-"U", "D", "L", "R"
+"U", "D", "L", "row"
 
 === Transitions ===
 Given some state s, the transitions will be represented as a list of tuples
@@ -42,40 +44,38 @@ of the format:
 [(action1, cost_of_action1, result(action1, s)), ...]
 For example, if an agent is at state (1, 1), and can only move right and down
 into clear tiles (.), then the transitions for that s = (1, 1) would be:
-[("R", 1, (2, 1)), ("D", 1, (1, 2))]
+[("row", 1, (2, 1)), ("D", 1, (1, 2))]
 '''
 class MazeProblem:
     # Static costMap for maze components and the cost to move onto them
     # Any component not listed assumed to have a cost of 1
     costMap = {"M": 3}
-    
+
     # MazeProblem Constructor:
     # Constructs a new pathfinding problem from a maze, described above
     def __init__(self, maze):
         self.maze = maze
         self.initial = None
         self.goals = []
-        
-        for r in list(enumerate(maze)):
-            for c in list(enumerate(r[1])):
-                state = (c[0], r[0])
-                if c[1] is "*":
+
+        for row in list(enumerate(maze)):
+            for column in list(enumerate(row[1])):
+                state = (column[0], row[0])
+                if column[1] == "*":
                     self.initial = state
-                if c[1] is "G":
+                if column[1] == "G":
                     self.goals.append(state)
-    
-    # goalTest is parameterized by a state, and
+
+    # goal_test is parameterized by a state, and
     # returns True if the given state is a goal, False otherwise
-    def goalTest(self, state):
-        # TODO: Implement as intended
-        return False
-    
+    def goal_test(self, state):
+        return state in self.goals
+
     # Implements the Manhattan Distance Heuristic, which (given a state)
     # provides the cell-distance to the nearest goal state
     def heuristic(self, state):
-        # TODO: Implement as intended
-        return 0
-    
+        
+
     # transitions returns a list of tuples in the format:
     # [(action1, cost_of_action1, result(action1, s), ...]
     # corresponding to allowable actions of the given state, as well
@@ -83,21 +83,21 @@ class MazeProblem:
     def transitions(self, state):
         # TODO: Implement as intended
         return []
-    
+
     # cost returns the cost of moving onto the given state, and employs
     # the MazeProblem's costMap
     def cost(self, state):
         cm = MazeProblem.costMap
         cell = self.maze[state[1]][state[0]]
         return cm[cell] if cell in cm else 1
-    
-    # solnTest will return a tuple of the format (cost, isSoln) where:
+
+    # soln_test will return a tuple of the format (cost, isSoln) where:
     # cost = the total cost of the solution,
     # isSoln = true if the given sequence of actions of the format:
     # [a1, a2, ...] successfully navigates to a goal state from the initial state
     # If NOT a solution, return a cost of -1
-    def solnTest(self, soln):
-        trans = {"U": (0, -1), "D": (0, 1), "L": (-1, 0), "R": (1, 0)}
+    def soln_test(self, soln):
+        trans = {"U": (0, -1), "D": (0, 1), "L": (-1, 0), "row": (1, 0)}
         s = self.initial
         tc = 0
         for m in soln:
@@ -105,5 +105,4 @@ class MazeProblem:
             tc += self.cost(s)
             if self.maze[s[1]][s[0]] == "X":
                 return (-1, False)
-        return (tc, self.goalTest(s))
-    
+        return (tc, self.goal_test(s))

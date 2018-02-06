@@ -58,9 +58,7 @@ class MazeProblem:
     # goalTest is parameterized by a state, and
     # returns True if the given state is a goal, False otherwise
     def goalTest(self, state):
-        if state in self.goals:
-            return True
-        return False
+        return state in self.goals
 
     # transitions returns a list of tuples in the format:
     # [(action1, result(action1, s), ...]
