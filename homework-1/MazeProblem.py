@@ -88,15 +88,25 @@ class MazeProblem:
     # corresponding to allowable actions of the given state, as well
     # as the next state the action leads to
     def transitions(self, state):
-        # TODO: Implement as intended
-        return []
+        allowed_states = []
+
+        if (state[1]-1 >= 0) and (self.maze[state[1]-1][state[0]] not in ['X', 'M']):
+            allowed_states.append(("U", (state[0], state[1]-1)))
+        if (state[1]+1 <= len(self.maze[state[1]+1])) and (self.maze[state[1]+1][state[0]] not in ['X', 'M']):
+            allowed_states.append(("D", (state[0], state[1]+1)))
+        if (state[0]-1 >= 0) and (self.maze[state[1]][state[0]-1] not in ['X', 'M']):
+            allowed_states.append(("L", (state[0]-1, state[1])))
+        if (state[0]+1 <= len(self.maze[state[1]])) and (self.maze[state[1]][state[0]+1] not in ['X', 'M']):
+            allowed_states.append(("R", (state[0]+1, state[1])))
+
+        return allowed_states
 
     # cost returns the cost of moving onto the given state, and employs
     # the MazeProblem's costMap
     def cost(self, state):
-        cm = MazeProblem.costMap
+        cost_map = MazeProblem.costMap
         cell = self.maze[state[1]][state[0]]
-        return cm[cell] if cell in cm else 1
+        return cost_map[cell] if cell in cost_map else 1
 
     # soln_test will return a tuple of the format (cost, isSoln) where:
     # cost = the total cost of the solution,

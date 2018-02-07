@@ -9,9 +9,9 @@ This task is done in the Pathfinder.solve method, as parameterized
 by a maze pathfinding problem, and is aided by the SearchTreeNode DS.
 '''
 
+import unittest
 from MazeProblem import MazeProblem
 from SearchTreeNode import SearchTreeNode
-import unittest
 
 class Pathfinder:
 
@@ -25,25 +25,25 @@ class PathfinderTests(unittest.TestCase):
         maze = ["XXXXX", "X..GX", "X...X", "X*..X", "XXXXX"]
         problem = MazeProblem(maze)
         soln = Pathfinder.solve(problem)
-        solnTest = problem.solnTest(soln)
-        self.assertTrue(solnTest[1])
-        self.assertEqual(solnTest[0], 4)
+        soln_test = problem.soln_test(soln)
+        self.assertTrue(soln_test[1])
+        self.assertEqual(soln_test[0], 4)
 
     def test_maze2(self):
         maze = ["XXXXX", "XG..X", "XX..X", "X*..X", "XXXXX"]
         problem = MazeProblem(maze)
         soln = Pathfinder.solve(problem)
-        solnTest = problem.solnTest(soln)
-        self.assertTrue(solnTest[1])
-        self.assertEqual(solnTest[0], 4)
+        soln_test = problem.soln_test(soln)
+        self.assertTrue(soln_test[1])
+        self.assertEqual(soln_test[0], 4)
 
     def test_maze3(self):
         maze = ["XXXXX", "X..GX", "X.MMX", "X*..X", "XXXXX"]
         problem = MazeProblem(maze)
         soln = Pathfinder.solve(problem)
-        solnTest = problem.solnTest(soln)
-        self.assertTrue(solnTest[1])
-        self.assertEqual(solnTest[0], 4)
+        soln_test = problem.soln_test(soln)
+        self.assertTrue(soln_test[1])
+        self.assertEqual(soln_test[0], 4)
 
     def test_maze4(self):
         maze = ["XXXXXX", "X....X", "X*.XXX", "X..XGX", "XXXXXX"]
