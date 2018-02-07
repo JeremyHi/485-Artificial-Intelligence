@@ -74,8 +74,14 @@ class MazeProblem:
     # Implements the Manhattan Distance Heuristic, which (given a state)
     # provides the cell-distance to the nearest goal state
     def heuristic(self, state):
+        shortest_path = len(self.maze[0]) * len(self.maze[1])
+        for goal in self.goals:
+            x_distance = abs(state.x - goal[0])
+            y_distance = abs(state.y - goal[1])
+            if (x_distance + y_distance) < shortest_path:
+                shortest_path = x_distance + y_distance
+        return shortest_path
 
-        
 
     # transitions returns a list of tuples in the format:
     # [(action1, cost_of_action1, result(action1, s), ...]
