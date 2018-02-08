@@ -76,8 +76,8 @@ class MazeProblem:
     def heuristic(self, state):
         shortest_path = len(self.maze[0]) * len(self.maze[1])
         for goal in self.goals:
-            x_distance = abs(state.x - goal[0])
-            y_distance = abs(state.y - goal[1])
+            x_distance = abs(state[0] - goal[0])
+            y_distance = abs(state[1] - goal[1])
             if (x_distance + y_distance) < shortest_path:
                 shortest_path = x_distance + y_distance
         return shortest_path
