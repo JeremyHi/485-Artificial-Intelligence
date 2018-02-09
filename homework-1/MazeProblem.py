@@ -89,15 +89,17 @@ class MazeProblem:
     # as the next state the action leads to
     def transitions(self, state):
         allowed_states = []
+        x = state[0]
+        y = state[1]
 
-        if (state[1]-1 >= 0) and (self.maze[state[1]-1][state[0]] not in ['X']):
-            allowed_states.append(("U", self.cost((state[0], state[1]-1)), (state[0], state[1]-1)))
-        if (state[1]+1 <= len(self.maze[state[1]+1])) and (self.maze[state[1]+1][state[0]] not in ['X']):
-            allowed_states.append(("D", self.cost((state[0], state[1]-1)), (state[0], state[1]+1)))
-        if (state[0]-1 >= 0) and (self.maze[state[1]][state[0]-1] not in ['X']):
-            allowed_states.append(("L", self.cost((state[0], state[1]-1)), (state[0]-1, state[1])))
-        if (state[0]+1 <= len(self.maze[state[1]])) and (self.maze[state[1]][state[0]+1] not in ['X']):
-            allowed_states.append(("R", self.cost((state[0], state[1]-1)), (state[0]+1, state[1])))
+        if (y-1 >= 0) and (self.maze[y-1][x] not in ['X']):
+            allowed_states.append(("U", self.cost((x, y-1)), (x, y-1)))
+        if (y+1 <= len(self.maze[y+1])) and (self.maze[y+1][x] not in ['X']):
+            allowed_states.append(("D", self.cost((x, y-1)), (x, y+1)))
+        if (x-1 >= 0) and (self.maze[y][x-1] not in ['X']):
+            allowed_states.append(("L", self.cost((x, y-1)), (x-1, y)))
+        if (x+1 <= len(self.maze[y])) and (self.maze[y][x+1] not in ['X']):
+            allowed_states.append(("R", self.cost((x, y-1)), (x+1, y)))
 
         return allowed_states
 
