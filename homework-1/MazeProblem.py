@@ -90,13 +90,13 @@ class MazeProblem:
     def transitions(self, state):
         allowed_states = []
 
-        if (state[1]-1 >= 0) and (self.maze[state[1]-1][state[0]] not in ['X', 'M']):
+        if (state[1]-1 >= 0) and (self.maze[state[1]-1][state[0]] not in ['X']):
             allowed_states.append(("U", (state[0], state[1]-1)))
-        if (state[1]+1 <= len(self.maze[state[1]+1])) and (self.maze[state[1]+1][state[0]] not in ['X', 'M']):
+        if (state[1]+1 <= len(self.maze[state[1]+1])) and (self.maze[state[1]+1][state[0]] not in ['X']):
             allowed_states.append(("D", (state[0], state[1]+1)))
-        if (state[0]-1 >= 0) and (self.maze[state[1]][state[0]-1] not in ['X', 'M']):
+        if (state[0]-1 >= 0) and (self.maze[state[1]][state[0]-1] not in ['X']):
             allowed_states.append(("L", (state[0]-1, state[1])))
-        if (state[0]+1 <= len(self.maze[state[1]])) and (self.maze[state[1]][state[0]+1] not in ['X', 'M']):
+        if (state[0]+1 <= len(self.maze[state[1]])) and (self.maze[state[1]][state[0]+1] not in ['X']):
             allowed_states.append(("R", (state[0]+1, state[1])))
 
         return allowed_states
