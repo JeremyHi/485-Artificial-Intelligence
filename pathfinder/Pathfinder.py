@@ -33,6 +33,7 @@ class Pathfinder:
         already_visited = set()
         nodes = [[SearchTreeNode(state=problem.initial, action=None, parent=None)]]
         already_visited.add(nodes[0][0].state)
+        counter = 0
         while nodes:
             current_level = nodes.pop()
             for node in current_level:
@@ -41,6 +42,7 @@ class Pathfinder:
                     while node.parent is not None:
                         solution.append(node.action)
                         node = node.parent
+                    print(counter)
                     return list(reversed(solution))
                 else:
                     already_visited.add((node.state))
@@ -51,6 +53,7 @@ class Pathfinder:
                 for transition in transitions:
                     if transition[1] not in already_visited:
                         new_node = SearchTreeNode(transition[1], transition[0], node)
+                        counter += 1
                         next_level.append(new_node)
             nodes.append(next_level)
 
@@ -102,6 +105,17 @@ class PathfinderTests(unittest.TestCase):
             "XXXXX.XXX",
             "XX*...XXX",
             "XXXXXXXXX"]
+        problem = MazeProblem(maze)
+        soln = Pathfinder.solve(self, problem)
+        soln_test = problem.solnTest(soln)
+        self.assertTrue(soln_test[1])
+        self.assertEqual(soln_test[0], 7)
+
+    def test_maze5(self):
+        maze = ["XXXXXXXXXX", "X..X.....X", "X*.....XXX",
+                "XXX..X.XGX", "X...XX.X.X", "X.X.X.X...X",
+                "X...X.XX.X", "X..G.XXX.X", "X........X",
+                "XXXXXXXXXX"]
         problem = MazeProblem(maze)
         soln = Pathfinder.solve(self, problem)
         soln_test = problem.solnTest(soln)
