@@ -1,0 +1,3 @@
+Explain your choices of data structures for the open and closed lists of your Pathfinder's graph search:
+
+	I chose to use a list of SearchTreeNode for the open_list and a list of states for my closed_list. A list of SearchTreeNodes for Open_list list made the most sense because I could iterate over each node and have access to all of the attributes such as state, parent, children, total_cost, and heuristic_cost. For closed_list, I only cared about previous states that I have visited so I decided to save space and only store the tree node states. 

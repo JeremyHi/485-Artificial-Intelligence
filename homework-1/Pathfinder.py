@@ -17,55 +17,63 @@ class Pathfinder:
 
     @staticmethod
     def solve(problem):
+        counter = 0
+        def lowestf(open_list):
+            lowF = open_list[0]
 
-        def lowest_cost(o_list):
-            lowest_cost = o_list[0]
-            for node in o_list:
-                node_cost = node.total_cost + node.heuristic_cost
-                lowest = lowest_cost.total_cost + lowest_cost.heuristic_cost
-                if node_cost < lowest:
-                    lowest_cost = node
-            return lowest_cost
+            for n in open_list:
+                fNode = n.total_cost + n.heuristic_cost
+                cNode = lowF.total_cost + lowF.heuristic_cost
 
-        def in_list(oc_list, transition):
-            for node in oc_list:
-                if transition.state == node.state and transition.total_cost < node.total_cost:
-                    return True
-            return False
+                if fNode < cNode:
+                    lowF = n
 
-        def repeated_node(oc_list, transition):
-            for node in oc_list:
-                if transition.state == node.state and transition.total_cost < node.total_cost:
-                    return node
-            return False
+            open_list.remove(lowF)
+            return lowF
+
+        def solution(node):
+            solution = []
+            while node.parent is not None:
+                solution.append(node.action)
+                node = node.parent
+            solution = list(reversed(solution))
+            return solution
 
         initial_position = problem.initial
         cost_to_goal = problem.heuristic(initial_position)
 
-        start = SearchTreeNode(initial_position, None, None, 0, cost_to_goal)
-        start.children = problem.transitions(start.state)
-        goals = problem.goals
+        start = SearchTreeNode(initial_position, None, None, 0, 0)
 
         open_list = [start]
         closed_list = []
 
-        # pylint: disable=E0602
         while open_list:
-            q = lowest_cost(open_list)
-            open_list.remove(q)
-            transitions = problem.transitions(q.state)
-            for transition in transitions:
-                transition = SearchTreeNode(transition[1], transition[0], q, 0, 0)
-                transition.parent = q
-                if problem.goal_test(transition):
-                    transition.total_cost = q.total_cost + problem.cost(transition.state)
-                    transition.heuristic_cost = problem.heuristic(transition.state)
-                    transition.total_cost = transition.total_cost + transition.heuristic_cost
-                if not in_list(open_list, transition) or in_list(closed_list, transition):
-                    open_list.append(repeated_node(closed_list, transition))
-            closed_list.append(q)
-        print(closed_list)
-        return closed_list
+            n = lowestf(open_list)
+            transitions = []
+            children = []
+            for t in problem.transitions(n.state):
+                if t[2] not in closed_list:
+                    transitions.append(t)
+
+            for t in transitions:
+                state = t[2]
+                action = t[0]
+                parent = n
+                total_cost = n.total_cost + t[1]
+                heuristic_cost = problem.heuristic(state)
+                child = SearchTreeNode(state, action, parent, total_cost, heuristic_cost)
+                counter += 1
+                n.children.append(child)
+
+                if problem.goal_test(child.state):
+                    print(counter)
+                    return solution(child)
+                if child.state not in closed_list:
+                    open_list.append(child)
+
+            closed_list.append(n.state)
+
+        return None
 
 
 class PathfinderTests(unittest.TestCase):
@@ -98,6 +106,18 @@ class PathfinderTests(unittest.TestCase):
         problem = MazeProblem(maze)
         soln = Pathfinder.solve(problem)
         self.assertFalse(soln)
+
+    def test_uniform_cost_maze(self):
+        maze = ["XXXXXXXXXXXX",
+                "X*.........X",
+                "X........XXX",
+                "X........XXX",
+                "X........XXX",
+                "X.........GX",
+                "XXXXXXXXXXXX"]
+        problem = MazeProblem(maze)
+        soln = Pathfinder.solve(problem)
+        self.assertTrue(soln)
 
 
 if __name__ == '__main__':
