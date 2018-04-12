@@ -40,24 +40,3 @@ class SearchTreeNode:
 
     def compare_nodes(self, node):
         return self.__dict__ == node.__dict__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# footer

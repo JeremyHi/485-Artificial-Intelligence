@@ -1,6 +1,8 @@
 # pylint: disable=missing-docstring
 
 '''
+NAME: Jeremy Hitchcock
+
 The Pathfinder class is responsible for finding a solution (i.e., a
 sequence of actions) that takes the agent from the initial state to the
 optimal goal state.
@@ -15,58 +17,57 @@ from SearchTreeNode import SearchTreeNode
 
 class Pathfinder:
 
+    # have goal_test(state), heuristic(state), transitions(state), and cost(state) function
+    # SearchTreeNode(state, action, parent, total_cost, heuristic_cost) children = []
+
     @staticmethod
     def solve(problem):
-
-        def lowest_cost(o_list):
-            lowest_cost = o_list[0]
-            for node in o_list:
-                node_cost = node.total_cost + node.heuristic_cost
-                lowest = lowest_cost.total_cost + lowest_cost.heuristic_cost
-                if node_cost < lowest:
+        def lowest_f(open_list):
+            lowest_cost = open_list[0]
+            for node in open_list:
+                f_node = node.total_cost + node.heuristic_cost
+                c_node = lowest_cost.total_cost + lowest_cost.heuristic_cost
+                if f_node < c_node:
                     lowest_cost = node
             return lowest_cost
 
-        def in_list(oc_list, transition):
-            for node in oc_list:
-                if transition.state == node.state and transition.total_cost < node.total_cost:
-                    return True
-            return False
-
-        def repeated_node(oc_list, transition):
-            for node in oc_list:
-                if transition.state == node.state and transition.total_cost < node.total_cost:
-                    return node
-            return False
-
         initial_position = problem.initial
-        cost_to_goal = problem.heuristic(initial_position)
 
-        start = SearchTreeNode(initial_position, None, None, 0, cost_to_goal)
-        start.children = problem.transitions(start.state)
-        goals = problem.goals
+        start = SearchTreeNode(initial_position, None, None, 0, 0)
 
         open_list = [start]
-        closed_list = []
+        closed_list = set()
 
-        # pylint: disable=E0602
+        counter = 0
         while open_list:
-            q = lowest_cost(open_list)
-            open_list.remove(q)
-            transitions = problem.transitions(q.state)
-            for transition in transitions:
-                transition = SearchTreeNode(transition[1], transition[0], q, 0, 0)
-                transition.parent = q
-                if problem.goal_test(transition):
-                    transition.total_cost = q.total_cost + problem.cost(transition.state)
-                    transition.heuristic_cost = problem.heuristic(transition.state)
-                    transition.total_cost = transition.total_cost + transition.heuristic_cost
-                if not in_list(open_list, transition) or in_list(closed_list, transition):
-                    open_list.append(repeated_node(closed_list, transition))
-            closed_list.append(q)
-        print(closed_list)
-        return closed_list
+            current_node = lowest_f(open_list)
+            open_list.remove(current_node)
 
+            transitions_current_node = []
+            for transition in problem.transitions(current_node.state):
+                if transition[2] not in closed_list:
+                    transitions_current_node.append(transition)
+
+            for transition in transitions_current_node:
+                transition = SearchTreeNode(transition[2], transition[0],
+                                            current_node, transition[1],
+                                            problem.heuristic(transition[2]))
+                current_node.children.append(transition)
+
+                if problem.goal_test(transition.state):
+                    solution = []
+                    while transition.parent is not None:
+                        solution.append(transition.action)
+                        transition = transition.parent
+                    print(counter)
+                    return list(reversed(solution))
+
+                if transition.state not in closed_list:
+                    counter += 1
+                    open_list.append(transition)
+
+            closed_list.add(current_node.state)
+        return None
 
 class PathfinderTests(unittest.TestCase):
     def test_maze1(self):
@@ -98,6 +99,17 @@ class PathfinderTests(unittest.TestCase):
         problem = MazeProblem(maze)
         soln = Pathfinder.solve(problem)
         self.assertFalse(soln)
+
+    def test_maze5(self):
+        maze = ["XXXXXXXXXX", "X..X.....X", "X*.....XXX",
+                "XXX..X.XGX", "X...XX.X.X", "X.X.X.X...X",
+                "X...X.XX.X", "X..G.XXX.X", "X........X",
+                "XXXXXXXXXX"]
+        problem = MazeProblem(maze)
+        soln = Pathfinder.solve(problem)
+        soln_test = problem.soln_test(soln)
+        self.assertTrue(soln_test[1])
+        self.assertEqual(soln_test[0], 7)
 
 
 if __name__ == '__main__':

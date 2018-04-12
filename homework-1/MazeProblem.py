@@ -99,7 +99,7 @@ class MazeProblem:
         if (x-1 >= 0) and (self.maze[y][x-1] not in ['X']):
             allowed_states.append(("L", self.cost((x-1, y)), (x-1, y)))
         if (x+1 <= len(self.maze[y])) and (self.maze[y][x+1] not in ['X']):
-            allowed_states.append(("R", self.cost((x+1, y)), (x+1, y)))
+            allowed_states.append(("row", self.cost((x+1, y)), (x+1, y)))
 
         return allowed_states
 
