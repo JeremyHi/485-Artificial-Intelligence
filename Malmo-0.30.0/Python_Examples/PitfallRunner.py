@@ -37,5 +37,5 @@ if __name__ == "__main__":
     ]
 
     # Pick your difficulty!
-    env = Environment(mazes[0])
+    env = Environment(mazes[1])
     env.startMission()

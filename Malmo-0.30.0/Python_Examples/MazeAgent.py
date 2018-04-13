@@ -7,6 +7,7 @@ import numpy
 
 # Agent constants
 MOVE_DIRS = {"U": (0, 1), "D": (0, -1), "L": (-1, 0), "R": (1, 0)}
+MOVE_DIRS_ADJUSTED = {"U": (0, 1), "D": (0, -1), "L": (1, 0), "R": (-1, 0)}
 
 class MazeAgent:
 
@@ -18,44 +19,52 @@ class MazeAgent:
         self.maze = env.agMaze
         self.plan = Queue()
 
-        self.maze_width = len(self.maze[0])-1
-        self.maze_height = len(self.maze)-1
+        self.maze_width = len(self.maze[0])
+        self.maze_height = len(self.maze)
 
         self.start = self.loc
+        self.goals = []
+
+        for row in list(enumerate(self.maze)):
+            for column in list(enumerate(row[1])):
+                state = (column[0]+2, row[0]-2)
+                if column[1] == "G":
+                    self.goals.append((self.maze_height - state[0], self.maze_width + state[1]))
+
         self.lava = []
         self.safe = [self.start]
         self.warning = []
         self.visited = []
 
-    # [!] TODO! Agent currently just runs straight up
     def think(self, perception):
-        print((self.loc[0], self.loc[1]))
+        current_location = (self.loc[0], self.loc[1])
 
-        if self.loc[1]+1 < self.maze_height and (self.loc[0], self.loc[1]+1) not in self.visited:
-            print("Up")
-            self.plan.put("U")
-            self.loc = (self.loc[0], self.loc[1]+1)
-        elif self.loc[0]-1 < self.maze_width and (self.loc[0]-1, self.loc[1]) not in self.visited:
-            print("Right")
-            self.plan.put("R")
-            self.loc = (self.loc[0]-1, self.loc[1])
-        elif self.loc[1]-1 > 1 and (self.loc[0], self.loc[1]-1) not in self.visited:
-            print("Down")
-            self.plan.put("D")
-            self.loc = (self.loc[0], self.loc[1]-1)
-        else:
-            print("Left")
-            self.plan.put("L")
-            self.loc = (self.loc[0]+1, self.loc[1])
+        moves = self.available_moves(current_location)
+        next_move = []
+        for move in moves:
+            adjusted_move = (current_location[0] + MOVE_DIRS_ADJUSTED[move][0],
+                             current_location[1] + MOVE_DIRS_ADJUSTED[move][1])
+            move_weight = 3 if adjusted_move in self.warning else 1
 
-        self.visited.append((self.loc[0], self.loc[1]))
+            if adjusted_move not in self.visited:
+                next_move.append(move_weight + self.manhattan_distance(adjusted_move, self.goals))
+
+        next_move = moves[next_move.index(min(next_move))]
+
+        self.plan.put(next_move)
+        self.loc = (self.loc[0] + MOVE_DIRS_ADJUSTED[next_move][0], self.loc[1] + MOVE_DIRS_ADJUSTED[next_move][1])
+        print((self.loc, next_move))
+
+        self.visited.append(current_location)
 
     def act(self):
+        current_location = (self.loc[0], self.loc[1])
         # BlindBot perceives what it is standing on...
         perception = self.perceive()
+        print(str(current_location) + ": " + perception)
         if perception == 'obsidian':
-            self.warning.append((self.loc[0], self.loc[1]))
-            print("obsidian found)" + str(self.warning))
+            current_location = (self.loc[0], self.loc[1])
+            self.warning.append(current_location)
 
         # ...BlindBot thinks...
         self.think(perception)
@@ -69,14 +78,39 @@ class MazeAgent:
     # [!] TODO: Any record-keeping when bot dies
     def die(self):
         # add the current location (lava) to unsafe space
-        self.lava.append((self.loc[0], self.loc[1]))
+        current_location = (self.loc[0], self.loc[1])
+        self.lava.append(current_location)
         # we know that all four spots around are obsidian/barrier aka not visitable
-        self.warning.append((self.loc[0]-1, self.loc[1]),
-                            (self.loc[0]+1, self.loc[1]),
-                            (self.loc[0], self.loc[1]+1),
-                            (self.loc[0], self.loc[1]-1))
+        self.warning.extend(((current_location[0]-1, current_location[1]),
+                             (current_location[0]+1, current_location[1]),
+                             (current_location[0], current_location[1]+1),
+                             (current_location[0], current_location[1]-1)))
+        print(self.warning)
         # Reset player position back to start
         self.loc = self.env.playerPos
+
+    def manhattan_distance(self, start, end):
+        ret = []
+        for goal in end:
+            sx, sy = start
+            ex, ey = goal
+            ret.append(abs(ex - sx) + abs(ey - sy))
+        return min(ret)
+
+    def available_moves(self, current_location):
+        moves = []
+
+        if current_location[1]+1 < self.maze_height-1 and (current_location[0], current_location[1]+1) not in self.visited:
+            moves.append("U")
+        if current_location[0]-1 > 0 and (current_location[0]-1, current_location[1]) not in self.visited:
+            moves.append("R")
+        if current_location[1]-1 > 0 and (current_location[0], current_location[1]-1) not in self.visited:
+            moves.append("D")
+        if current_location[0]+1 < self.maze_width-1 and (current_location[0]+1, current_location[1]) not in self.visited:
+            moves.append("L")
+
+        return moves
+
 
     # -----------------------------------------------------------------------
     # YOU MAY NOT MODIFY ANYTHING BELOW THIS LINE
